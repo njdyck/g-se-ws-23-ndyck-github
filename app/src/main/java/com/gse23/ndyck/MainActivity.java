@@ -1,13 +1,15 @@
 package com.gse23.ndyck;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
 
-import java.io.File;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
+
 import java.io.IOException;
+import java.io.InputStream;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -16,50 +18,50 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        checkAlbums("Italien");
-        checkAlbums("Urlaub Österreich");
-        checkAlbums("Ostwestfalen");
+        checkAlbums();
     }
+    private void checkAlbums() {
+        AssetManager assetManager = getAssets();
+        try {
+            String[] albums = assetManager.list("albums/");
+            for (String albumName: albums){
+                String[] files = assetManager.list("albums/" + albumName);
+                if (files != null) {
+                    for (String fileName : files) {
+                        if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")
+                                || fileName.endsWith(".png")) {
+                            Log.i("Albumname:", albumName); // Name des Ordners
+                            Log.i("Dateiname:", fileName);  // Name des Ornders mit Index
 
-    public static void checkAlbums1(File[] album){
-        if (album != null) {
-            for (File land_album : album) {
-                String albumName = land_album.getName();
-                File[] land = land_album.listFiles();
+                            String filePath = "albums/" + albumName + "/" + fileName;
 
-                if (land != null) {
-                    for (File land_index : land) {
-                        if (land_index.isFile() && (
-                                land_index.getName().endsWith(".jpg") ||
-                                        land_index.getName().endsWith(".jpeg") ||
-                                        land_index.getName().endsWith(".png")
-                        )) {
-                            Log.i("Albumname: ", albumName);
-                            Log.i("Dateiname: ", land_index.getName());
+                            ImageInformation infos =
+                                    readExif(filePath);
+
+                            String latitude = infos.getLatitude();
+                            String longitude = infos.getLongitude();
+
+                            Log.i("albums", String.valueOf(latitude));
+                            Log.i("albums", String.valueOf(longitude));
                         }
                     }
                 }
             }
-        } else {
-            Log.i("ERROR:", "Keine entsprechenden Dateien");
-        }
-    }
-    private void checkAlbums(String albumName) {
-        AssetManager assetManager = getAssets();
-        try {
-            String[] files = assetManager.list("albums/" + albumName);
-
-            for (String fileName : files) {
-                if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png")) {
-                    Log.i("Albumname: ", albumName);
-                    Log.i("Dateiname: ", fileName);
-                }
-            }
         } catch (IOException e) {
             e.printStackTrace();
-            Log.i("ERROR:", "Keine entsprechenden Dateien im Album " + albumName);
+            Log.i("ERROR:", "Fehler beim Lesen der Dateien");
         }
     }
 
+    public ImageInformation readExif(String filepath){
+        try (InputStream in = getAssets().open(filepath)) {
+            return ExifReader.readExif(in);
+        } catch (IOException e) {
+            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
+                    "Bild konnte nicht geladen werden!", Snackbar.LENGTH_SHORT);
+            snackbar.show();
+            return null;
+        }
+    }
 }
 
