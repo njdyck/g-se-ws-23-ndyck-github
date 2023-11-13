@@ -21,19 +21,20 @@ public class MainActivity extends AppCompatActivity {
         checkAlbums();
     }
     private void checkAlbums() {
+        String album = "albums/";
         AssetManager assetManager = getAssets();
         try {
-            String[] albums = assetManager.list("albums/");
-            for (String albumName: albums){
-                String[] files = assetManager.list("albums/" + albumName);
+            String[] albums = assetManager.list(album);
+            for (String albumName: albums) {
+                String[] files = assetManager.list(album + albumName);
                 if (files != null) {
                     for (String fileName : files) {
                         if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")
                                 || fileName.endsWith(".png")) {
-                            Log.i("Albumname:", albumName); // Name des Ordners
-                            Log.i("Dateiname:", fileName);  // Name des Ornders mit Index
+                            Log.i("Albumname:", albumName);
+                            Log.i("Dateiname:", fileName);
 
-                            String filePath = "albums/" + albumName + "/" + fileName;
+                            String filePath = album + albumName + "/" + fileName;
 
                             ImageInformation infos =
                                     readExif(filePath);
@@ -41,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
                             String latitude = infos.getLatitude();
                             String longitude = infos.getLongitude();
 
-                            Log.i("albums", String.valueOf(latitude));
-                            Log.i("albums", String.valueOf(longitude));
+                            Log.i(album, String.valueOf(latitude));
+                            Log.i(album, String.valueOf(longitude));
                         }
                     }
                 }
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public ImageInformation readExif(String filepath){
+    public ImageInformation readExif(String filepath) {
         try (InputStream in = getAssets().open(filepath)) {
             return ExifReader.readExif(in);
         } catch (IOException e) {

@@ -5,7 +5,7 @@ import androidx.exifinterface.media.ExifInterface;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ExifReader {
+ class ExifReader {
 
     public static ImageInformation readExif(InputStream in) throws IOException {
         String name = null;
@@ -15,6 +15,6 @@ public class ExifReader {
                 getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
         String latitude = exifInterface.
                 getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-        return new ImageInformation(name, longitude, latitude);
+        return new ImageInformation(longitude, latitude);
     }
 }
