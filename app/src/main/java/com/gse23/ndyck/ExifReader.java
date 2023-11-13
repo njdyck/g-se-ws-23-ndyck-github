@@ -5,8 +5,12 @@ import androidx.exifinterface.media.ExifInterface;
 import java.io.IOException;
 import java.io.InputStream;
 
- class ExifReader {
+  public class ExifReader {
+      private InputStream inputStream;
 
+      private ExifReader(InputStream inputStream) {
+          this.inputStream = inputStream;
+      }
     public static ImageInformation readExif(InputStream in) throws IOException {
         String name = null;
         ExifInterface exifInterface = new ExifInterface(in);
