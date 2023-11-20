@@ -93,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (items.contains(map)) {
             startActivity(intent);
-            Log.i("Ausgewählte Map: ", map);
         } else {
             try {
                 throw new noMapSelectedException();
