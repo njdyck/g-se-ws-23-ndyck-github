@@ -11,6 +11,7 @@ import java.io.InputStream;
       private ExifReader(InputStream inputStream) {
           this.inputStream = inputStream;
       }
+
     public static ImageInformation readExif(InputStream in) throws IOException {
         String name = null;
         ExifInterface exifInterface = new ExifInterface(in);

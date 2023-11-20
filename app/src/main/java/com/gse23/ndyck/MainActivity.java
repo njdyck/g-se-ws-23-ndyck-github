@@ -1,8 +1,13 @@
 package com.gse23.ndyck;
 
+
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,15 +15,27 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    private List items = new ArrayList();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkAlbums();
+
+        AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                items
+        );
+
+        autoCompleteTextView.setAdapter(adapter);
     }
     private void checkAlbums() {
         String album = "albums/";
@@ -33,7 +50,9 @@ public class MainActivity extends AppCompatActivity {
                                 || fileName.endsWith(".png")) {
                             Log.i("Albumname:", albumName);
                             Log.i("Dateiname:", fileName);
-
+                            if (!items.contains(albumName)) {
+                                items.add(albumName);
+                            }
                             String filePath = album + albumName + "/" + fileName;
 
                             ImageInformation infos =
@@ -64,5 +83,26 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+
+
+    public void onClick(View view) {
+        AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
+        Intent intent = new Intent(MainActivity.this, GameActivity.class);
+        String map = autoCompleteTextView.getText().toString();
+        intent.putExtra("Ausgewählte Map: ", map);
+
+        if (items.contains(map)) {
+            startActivity(intent);
+            Log.i("Ausgewählte Map: ", map);
+        } else {
+            try {
+                throw new noMapSelectedException();
+            } catch (noMapSelectedException e) {
+                e.printStackTrace();
+                Snackbar.make(view, "Bitte wähle eine Karte aus", Snackbar.LENGTH_LONG).show();
+            }
+        }
+    }
+
 }
 
