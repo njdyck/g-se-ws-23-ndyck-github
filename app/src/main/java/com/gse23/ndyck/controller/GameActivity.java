@@ -22,6 +22,7 @@ public class GameActivity extends MainActivity {
         Log.i("Ausgewählte Map: ", map);
 
         List names = getPicNames(map);
+        logFileNames(names);
 
     }
 
@@ -47,6 +48,12 @@ public class GameActivity extends MainActivity {
             }
         }
         return names;
+    }
+
+    public void logFileNames(List names){
+        for (Object fileNames: names) {
+            Log.i("Dateien: ", fileNames.toString());
+        }
     }
 
 }
