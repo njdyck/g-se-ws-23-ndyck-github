@@ -2,8 +2,12 @@ package com.gse23.ndyck.controller;
 
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.gse23.ndyck.R;
@@ -18,24 +22,50 @@ import java.util.HashMap;
 import java.util.List;
 
 public class GameActivity extends MainActivity {
+    private ImageView imageView;
     HashMap<String, List<String>> names = new HashMap<String,List<String>>();
     String map;
+    private List<String> displayedImages = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        imageView = findViewById(R.id.imageView);
+
         map = getIntent().getStringExtra("Ausgewählte Map: ");
         Log.i("Ausgewählte Map: ", map);
 
         getPicInfo(map);
-
         logFileInfos(names);
+        displayRandomImage();
+    }
 
+    private void displayRandomImage() {
+        String randomFileName = getRandomFileName(names);
 
+        if (randomFileName != null && !displayedImages.contains(randomFileName)) {
+            getImage(randomFileName);
+            displayedImages.add(randomFileName);
+        } else {
+            if (displayedImages.size() == names.size()) {
+                Snackbar.make(findViewById(android.R.id.content),
+                        "Alle Bilder wurden angezeigt", Snackbar.LENGTH_SHORT).show();
+            }
+        }
+    }
+    public void getImage(String fileName) {
+        try {
+            InputStream in = getAssets().open("albums/" + map + "/" + fileName);
+            Bitmap bitmap = BitmapFactory.decodeStream(in);
+            imageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // gets the cords of a file
-    private List<String> getExifs(String fileName) {
+    public List<String> getExifs(String fileName) {
         ImageInformation infos =
                 readExif("albums/" + map+ "/" + fileName);
 
@@ -102,4 +132,18 @@ public class GameActivity extends MainActivity {
 
     }
 
+    public void nextPic(View view) {
+        displayRandomImage();
+    }
+
+    public String getRandomFileName(HashMap<String, List<String>> names) {
+        List<String> fileNames = new ArrayList<>(names.keySet());
+
+        if (!fileNames.isEmpty()) {
+            int randomIndex = (int) (Math.random() * fileNames.size());
+            return fileNames.get(randomIndex);
+        } else {
+            return null;
+        }
+    }
 }
