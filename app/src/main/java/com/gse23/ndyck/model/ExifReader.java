@@ -13,13 +13,14 @@ import java.io.InputStream;
       }
 
     public static ImageInformation readExif(InputStream in) throws IOException {
-        String name = null;
         ExifInterface exifInterface = new ExifInterface(in);
-        name = exifInterface.getAttribute(ExifInterface.TAG_ARTIST);
         String longitude = exifInterface.
                 getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
         String latitude = exifInterface.
                 getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-        return new ImageInformation(longitude, latitude);
+        String discribtion = exifInterface.
+                getAttribute(ExifInterface.TAG_IMAGE_DESCRIPTION);
+
+        return new ImageInformation(longitude, latitude, discribtion);
     }
 }
