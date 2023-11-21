@@ -1,4 +1,4 @@
-package com.gse23.ndyck;
+package com.gse23.ndyck.controller;
 
 
 import android.content.Intent;
@@ -12,6 +12,8 @@ import android.widget.AutoCompleteTextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.gse23.ndyck.R;
+import com.gse23.ndyck.model.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,8 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 String[] files = assetManager.list(album + albumName);
                 if (files != null) {
                     for (String fileName : files) {
-                        if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")
-                                || fileName.endsWith(".png")) {
+                        if (isImageFile(fileName)) {
                             Log.i("Albumname:", albumName);
                             Log.i("Dateiname:", fileName);
                             if (!items.contains(albumName)) {
@@ -84,6 +85,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isImageFile(String fileName) {
+        return fileName.endsWith(".jpg") || fileName.endsWith(".jpeg") || fileName.endsWith(".png");
+    }
 
     public void onClick(View view) {
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.autoCompleteTextView);
@@ -95,10 +99,10 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         } else {
             try {
-                throw new noMapSelectedException();
-            } catch (noMapSelectedException e) {
+                throw new noImagesInAlbumException();
+            } catch (noImagesInAlbumException e) {
                 e.printStackTrace();
-                Snackbar.make(view, "Bitte wähle eine Karte aus", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(view, "Keine Bilder in dem Album", Snackbar.LENGTH_LONG).show();
             }
         }
     }

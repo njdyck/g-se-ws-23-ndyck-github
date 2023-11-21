@@ -1,4 +1,4 @@
-package com.gse23.ndyck;
+package com.gse23.ndyck.model;
 
 public class ImageInformation {
 

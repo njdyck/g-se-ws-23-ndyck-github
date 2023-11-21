@@ -1,14 +1,14 @@
-package com.gse23.ndyck;
+package com.gse23.ndyck.model;
 
 import androidx.exifinterface.media.ExifInterface;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-  final class ExifReader {
-      private InputStream inputStream;
+  public final class ExifReader {
+      InputStream inputStream;
 
-      private ExifReader(InputStream inputStream) {
+      ExifReader(InputStream inputStream) {
           this.inputStream = inputStream;
       }
 
