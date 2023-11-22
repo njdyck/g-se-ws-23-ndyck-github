@@ -76,9 +76,13 @@ public class Image {
             String lon = infos.get(1);
             String dis = infos.get(2);
 
+            logInfo(fileName, lat, lon, dis);
+        }
+    }
+
+    public static void logInfo(String fileName, String lat, String lon, String dis) {
             Log.i("FileName: " + fileName, "Latitude: " + lat + ", Longitude: " + lon +
                     ", Discribtion: " + dis);
-        }
     }
 
     public static void displayRandomImage(GameActivity activity, String map, ImageView imageView,
@@ -89,6 +93,13 @@ public class Image {
         if (randomFileName != null && !displayedImages.contains(randomFileName)) {
             displayImage(activity, map, randomFileName, imageView);
             displayedImages.add(randomFileName);
+
+            List<String> exifs = getExifs(activity, map, randomFileName);
+            String lat = exifs.get(0);
+            String lon = exifs.get(1);
+            String dis = exifs.get(2);
+            logInfo(randomFileName, lat, lon, dis);
+
         } else {
             if (displayedImages.size() == names.size()) {
                 Snackbar.make(
